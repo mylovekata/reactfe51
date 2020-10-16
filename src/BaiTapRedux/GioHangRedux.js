@@ -8,7 +8,16 @@ class GioHangRedux extends Component {
     
     renderGioHang = ()=>{
         return this.props.gioHang.map((spGioHang,index)=>{
-            return <SanPhamGHRedux spGioHang={spGioHang}/>
+            return <tr key={index}>
+            <td>{spGioHang.maSP}</td>
+            <td>{spGioHang.tenSP}</td>
+            <td><img src={spGioHang.hinhAnh} width ={50} height={50} /></td>
+            <td><button className="btn btn-dark"  onClick={()=>this.props.tangGiamSoLuong(spGioHang.maSP,true)}
+            >+</button>{spGioHang.soLuong}<button className="btn btn-dark" onClick={()=>this.props.tangGiamSoLuong(spGioHang.maSP,false)}>-</button></td>
+            <td>{spGioHang.giaBan}</td>
+            <td>{spGioHang.soLuong *spGioHang.giaBan}</td>
+            <td><button className="btn btn-danger" onClick={()=>this.props.xoaGioHang(spGioHang.maSP)}>Xóa</button></td>
+        </tr>
         })
     }
     render() {
@@ -42,4 +51,30 @@ const mapStateToProps = (rootReducer) => {
     }
 }
 
-export default connect(mapStateToProps)(GioHangRedux); //Kết nối giữa gioHangReduxComponent và redux store
+//tạo ra 1 props là hàm đưa giá trị lên reducer => để set lại state.
+const mapDispatchToProps = (dispatch) => {
+    return{
+        xoaGioHang: (maSPClick)=>{
+            console.log(maSPClick);
+            //Tạo ra action gửi lên reducer
+            const action ={
+                type: 'XOA_GIO_HANG',
+                maSPClick
+            }
+            //Dùng hàm dispatch đưa lên reducer
+            dispatch(action);
+        },
+        tangGiamSoLuong : (maSP,tangGiam)=>{
+            //tạo ra action
+            const action = {
+                type: 'TANG_GIAM_SO_LUONG',
+                maSP,
+                tangGiam,
+            }
+            dispatch(action);
+
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(GioHangRedux); //Kết nối giữa gioHangReduxComponent và redux store
